@@ -203,6 +203,7 @@ for m_date in months:
         })
 
 customer_month_df = pd.DataFrame(customer_month_rows)
+customer_month_df["plan_id"] = customer_month_df["plan_id"].astype("Int64")
 
 # ----------------------------
 # 6) Write outputs
