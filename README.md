@@ -1,16 +1,16 @@
-\# B2B SaaS Revenue \& Retention Analytics System  
+# B2B SaaS Revenue & Retention Analytics System  
 
-\### Production-Style SQL Pipeline + Power BI Executive Dashboard
-
-
+### Production-Style SQL Pipeline + Power BI Executive Dashboard
 
 
 
-\## 1. Executive Summary
+
+
+## 1. Executive Summary
 
 
 
-This project builds a \*\*production-style analytics system\*\* to evaluate subscription growth health and sustainability for a B2B SaaS business.
+This project builds a **production-style analytics system** to evaluate subscription growth health and sustainability for a B2B SaaS business.
 
 
 
@@ -18,7 +18,7 @@ It answers the executive question:
 
 
 
-> \*\*Is our growth healthy, sustainable, and efficient?\*\*
+> **Is our growth healthy, sustainable, and efficient?**
 
 
 
@@ -26,19 +26,19 @@ The system measures:
 
 
 
-\- Revenue composition (New / Expansion / Contraction / Churn)
+- Revenue composition (New / Expansion / Contraction / Churn)
 
-\- Monthly Recurring Revenue (MRR) reconciliation
+- Monthly Recurring Revenue (MRR) reconciliation
 
-\- Customer retention (logo retention)
+- Customer retention (logo retention)
 
-\- Gross Revenue Retention (GRR)
+- Gross Revenue Retention (GRR)
 
-\- Net Revenue Retention (NRR)
+- Net Revenue Retention (NRR)
 
-\- Cohort behavior over time
+- Cohort behavior over time
 
-\- Growth efficiency (Customer Acquisition Cost vs revenue)
+- Growth efficiency (Customer Acquisition Cost vs revenue)
 
 
 
@@ -48,15 +48,15 @@ The dataset is synthetic but engineered to simulate realistic SaaS behavior over
 
 
 
-\## 2. Business Model Assumptions
+## 2. Business Model Assumptions
 
 
 
-\- 36 months of data (Jan 2023 – Dec 2025)
+- 36 months of data (Jan 2023 – Dec 2025)
 
-\- 10,000 total customers
+- 10,000 total customers
 
-\- 3 subscription plans:
+- 3 subscription plans:
 
 &nbsp; - Basic ($50)
 
@@ -64,23 +64,23 @@ The dataset is synthetic but engineered to simulate realistic SaaS behavior over
 
 &nbsp; - Pro ($200)
 
-\- 3% monthly churn
+- 3% monthly churn
 
-\- 7% monthly plan change rate
+- 7% monthly plan change rate
 
 &nbsp; - 70% upgrades
 
 &nbsp; - 30% downgrades
 
-\- Linear growth with controlled randomness
+- Linear growth with controlled randomness
 
-\- Customer acquisition channels with variable CAC (Customer Acquisition Cost)
-
-
+- Customer acquisition channels with variable CAC (Customer Acquisition Cost)
 
 
 
-\## 3. Architecture Overview
+
+
+## 3. Architecture Overview
 
 
 
@@ -94,7 +94,7 @@ RAW (PostgreSQL)
 
 ↓
 
-STAGING (cleaned \& standardized)
+STAGING (cleaned & standardized)
 
 ↓
 
@@ -107,11 +107,11 @@ Power BI (semantic model + executive reporting)
 
 
 
-\## 4. Data Pipeline Layers
+## 4. Data Pipeline Layers
 
 
 
-\### RAW Layer
+### RAW Layer
 
 Stores CSV data exactly as generated.
 
@@ -123,17 +123,17 @@ Source-of-truth ingestion tables.
 
 Tables:
 
-\- raw.plans
+- raw.plans
 
-\- raw.customers
+- raw.customers
 
-\- raw.customer\_month
+- raw.customer_month
 
-\- raw.acquisition\_cost
+- raw.acquisition_cost
 
 
 
-\### STAGING Layer
+### STAGING Layer
 
 Standardized and validated data.
 
@@ -141,15 +141,15 @@ Standardized and validated data.
 
 Adds:
 
-\- Type enforcement
+- Type enforcement
 
-\- Basic flags (e.g., churn month indicator)
+- Basic flags (e.g., churn month indicator)
 
-\- Clean structure for analytics
+- Clean structure for analytics
 
 
 
-\### MART Layer (Analytics-Ready)
+### MART Layer (Analytics-Ready)
 
 
 
@@ -157,19 +157,19 @@ Star schema design:
 
 
 
-\*\*Dimensions\*\*
+**Dimensions**
 
-\- mart.dim\_date
+- mart.dim_date
 
-\- mart.dim\_customer
+- mart.dim_customer
 
-\- mart.dim\_plan
+- mart.dim_plan
 
 
 
-\*\*Fact Table\*\*
+**Fact Table**
 
-\- mart.fact\_customer\_month  
+- mart.fact_customer_month  
 
 &nbsp; Grain: 1 row per customer per month
 
@@ -177,13 +177,13 @@ Star schema design:
 
 Includes:
 
-\- MRR
+- MRR
 
-\- Previous month MRR
+- Previous month MRR
 
-\- MRR delta
+- MRR delta
 
-\- Movement classification:
+- Movement classification:
 
 &nbsp; - New
 
@@ -199,13 +199,13 @@ Includes:
 
 
 
-\### Analytical Views
+### Analytical Views
 
 
 
-\#### Monthly MRR Bridge
+#### Monthly MRR Bridge
 
-`mart.vw\_monthly\_mrr\_bridge`
+`mart.vw_monthly_mrr_bridge`
 
 
 
@@ -233,49 +233,49 @@ Churn = Ending MRR
 
 
 
-Includes a reconciliation check (`bridge\_diff`) to ensure financial consistency.
+Includes a reconciliation check (`bridge_diff`) to ensure financial consistency.
 
 
 
-\#### Monthly Retention Metrics
+#### Monthly Retention Metrics
 
-`mart.vw\_monthly\_retention`
+`mart.vw_monthly_retention`
 
 
 
 Metrics:
 
-\- Logo retention rate
+- Logo retention rate
 
-\- Gross Revenue Retention (GRR)
+- Gross Revenue Retention (GRR)
 
-\- Net Revenue Retention (NRR)
+- Net Revenue Retention (NRR)
 
 
 
 Definitions:
 
-\- GRR = (Beginning MRR - Contraction - Churn) / Beginning MRR
+- GRR = (Beginning MRR - Contraction - Churn) / Beginning MRR
 
-\- NRR = (Beginning MRR + Expansion - Contraction - Churn) / Beginning MRR
-
-
+- NRR = (Beginning MRR + Expansion - Contraction - Churn) / Beginning MRR
 
 
 
-\## 5. Power BI Model
+
+
+## 5. Power BI Model
 
 
 
-\- Star schema imported from MART
+- Star schema imported from MART
 
-\- Single-direction relationships
+- Single-direction relationships
 
-\- Minimal DAX (measures only)
+- Minimal DAX (measures only)
 
-\- SQL handles heavy transformations
+- SQL handles heavy transformations
 
-\- Executive-level visuals:
+- Executive-level visuals:
 
 &nbsp; - MRR trend
 
@@ -289,7 +289,7 @@ Definitions:
 
 
 
-\## 6. Reproducibility
+## 6. Reproducibility
 
 
 
@@ -301,15 +301,15 @@ To regenerate:
 
 
 
-1\. Run `generate\_saas\_data.py`
+1. Run `generate_saas_data.py`
 
-2\. Reload CSVs into `raw` schema
+2. Reload CSVs into `raw` schema
 
-3\. Execute staging scripts
+3. Execute staging scripts
 
-4\. Rebuild mart tables and views
+4. Rebuild mart tables and views
 
-5\. Refresh Power BI
+5. Refresh Power BI
 
 
 
@@ -319,7 +319,7 @@ The pipeline is fully rerunnable.
 
 
 
-\## 7. Key Signals Demonstrated
+## 7. Key Signals Demonstrated
 
 
 
@@ -327,37 +327,37 @@ This project showcases:
 
 
 
-\- Production-style layered SQL architecture
+- Production-style layered SQL architecture
 
-\- Star schema modeling
+- Star schema modeling
 
-\- Window functions (LAG)
+- Window functions (LAG)
 
-\- Revenue movement classification logic
+- Revenue movement classification logic
 
-\- KPI definition rigor
+- KPI definition rigor
 
-\- Financial reconciliation validation
+- Financial reconciliation validation
 
-\- Separation of computation vs presentation logic
+- Separation of computation vs presentation logic
 
-\- Clean Power BI semantic modeling
-
-
+- Clean Power BI semantic modeling
 
 
 
-\## 8. Repository Structure
+
+
+## 8. Repository Structure
 
 
 
-1\_data\_generation/
+1_data_generation/
 
-generate\_saas\_data.py
+generate_saas_data.py
 
 
 
-2\_data/
+2_data/
 
 &nbsp;	raw/ (generated CSV files)
 
@@ -365,7 +365,7 @@ generate\_saas\_data.py
 
 
 
-3\_sql/
+3_sql/
 
 &nbsp;	raw/
 
@@ -375,13 +375,13 @@ generate\_saas\_data.py
 
 
 
-4\_powerbi/
+4_powerbi/
 
 &nbsp;	Power BI report file
 
 
 
-0\_project\_admin/
+0_project_admin/
 
 &nbsp;	assumptions.md
 
@@ -393,7 +393,7 @@ generate\_saas\_data.py
 
 
 
-\## 9. Why This Project Matters
+## 9. Why This Project Matters
 
 
 
@@ -405,19 +405,19 @@ It is a full analytics system designed to reflect how subscription businesses me
 
 
 
-\- Growth quality
+- Growth quality
 
-\- Revenue durability
+- Revenue durability
 
-\- Expansion strength
+- Expansion strength
 
-\- Churn risk
+- Churn risk
 
-\- Capital efficiency
+- Capital efficiency
 
 
 
 The architecture mirrors real-world BI environments and is intentionally built for scalability and clarity.
 
-\*Project by \[EstebanSP23](https://github.com/EstebanSP23) – Production-oriented Data Analytics Portfolio\*
+*Project by [EstebanSP23](https://github.com/EstebanSP23) – Production-oriented Data Analytics Portfolio*
 
