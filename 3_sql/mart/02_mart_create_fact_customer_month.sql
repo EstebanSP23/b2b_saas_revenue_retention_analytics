@@ -12,7 +12,7 @@
 
 CREATE SCHEMA IF NOT EXISTS mart;
 
-DROP TABLE IF EXISTS mart.fact_customer_month;
+DROP TABLE IF EXISTS mart.fact_customer_month CASCADE;
 
 CREATE TABLE mart.fact_customer_month AS
 WITH base AS (
