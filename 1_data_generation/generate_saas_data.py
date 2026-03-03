@@ -233,7 +233,7 @@ monthly_summary = (
     customer_month_df
     .groupby("month")
     .agg(
-        active_customers=("customer_id", "nunique"),
+        active_customers=("customer_id", lambda s: s[customer_month_df.loc[s.index, "mrr"] > 0].nunique()),
         total_mrr=("mrr", "sum")
     )
     .reset_index()
@@ -244,3 +244,6 @@ print(monthly_summary.head())
 
 print("\nMonthly summary (last 5 rows):")
 print(monthly_summary.tail())
+
+print("\nMonthly summary (last row):")
+print(monthly_summary.tail(1))
