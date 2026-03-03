@@ -1,16 +1,423 @@
-# SaaS Subscription Revenue & Retention Analytics (SQL + Power BI)
+\# B2B SaaS Revenue \& Retention Analytics System  
 
-This project builds an analytics system to evaluate subscription growth health:
-- Revenue composition (new / expansion / contraction / churn)
-- Customer retention and churn
-- Net revenue retention and gross revenue retention
-- Cohort retention curves
-- Growth efficiency (acquisition cost vs value)
+\### Production-Style SQL Pipeline + Power BI Executive Dashboard
 
-**Dataset:** Synthetic, generated to simulate realistic B2B SaaS behavior over 36 months.
 
-## Repo Structure
-- /src: data generation code
-- /data/raw: generated CSV inputs (source-of-truth files)
-- /sql: SQL scripts (raw → staging → mart)
-- /docs: KPI definitions, assumptions, diagrams
+
+
+
+\## 1. Executive Summary
+
+
+
+This project builds a \*\*production-style analytics system\*\* to evaluate subscription growth health and sustainability for a B2B SaaS business.
+
+
+
+It answers the executive question:
+
+
+
+> \*\*Is our growth healthy, sustainable, and efficient?\*\*
+
+
+
+The system measures:
+
+
+
+\- Revenue composition (New / Expansion / Contraction / Churn)
+
+\- Monthly Recurring Revenue (MRR) reconciliation
+
+\- Customer retention (logo retention)
+
+\- Gross Revenue Retention (GRR)
+
+\- Net Revenue Retention (NRR)
+
+\- Cohort behavior over time
+
+\- Growth efficiency (Customer Acquisition Cost vs revenue)
+
+
+
+The dataset is synthetic but engineered to simulate realistic SaaS behavior over 36 months.
+
+
+
+
+
+\## 2. Business Model Assumptions
+
+
+
+\- 36 months of data (Jan 2023 – Dec 2025)
+
+\- 10,000 total customers
+
+\- 3 subscription plans:
+
+&nbsp; - Basic ($50)
+
+&nbsp; - Plus ($100)
+
+&nbsp; - Pro ($200)
+
+\- 3% monthly churn
+
+\- 7% monthly plan change rate
+
+&nbsp; - 70% upgrades
+
+&nbsp; - 30% downgrades
+
+\- Linear growth with controlled randomness
+
+\- Customer acquisition channels with variable CAC (Customer Acquisition Cost)
+
+
+
+
+
+\## 3. Architecture Overview
+
+
+
+The system follows a layered architecture inspired by production analytics environments.
+
+Python Generator
+
+↓
+
+RAW (PostgreSQL)
+
+↓
+
+STAGING (cleaned \& standardized)
+
+↓
+
+MART (star schema + KPI views)
+
+↓
+
+Power BI (semantic model + executive reporting)
+
+
+
+
+\## 4. Data Pipeline Layers
+
+
+
+\### RAW Layer
+
+Stores CSV data exactly as generated.
+
+No transformations.
+
+Source-of-truth ingestion tables.
+
+
+
+Tables:
+
+\- raw.plans
+
+\- raw.customers
+
+\- raw.customer\_month
+
+\- raw.acquisition\_cost
+
+
+
+\### STAGING Layer
+
+Standardized and validated data.
+
+
+
+Adds:
+
+\- Type enforcement
+
+\- Basic flags (e.g., churn month indicator)
+
+\- Clean structure for analytics
+
+
+
+\### MART Layer (Analytics-Ready)
+
+
+
+Star schema design:
+
+
+
+\*\*Dimensions\*\*
+
+\- mart.dim\_date
+
+\- mart.dim\_customer
+
+\- mart.dim\_plan
+
+
+
+\*\*Fact Table\*\*
+
+\- mart.fact\_customer\_month  
+
+&nbsp; Grain: 1 row per customer per month
+
+
+
+Includes:
+
+\- MRR
+
+\- Previous month MRR
+
+\- MRR delta
+
+\- Movement classification:
+
+&nbsp; - New
+
+&nbsp; - Expansion
+
+&nbsp; - Contraction
+
+&nbsp; - Churn
+
+&nbsp; - Flat
+
+&nbsp; - Inactive
+
+
+
+\### Analytical Views
+
+
+
+\#### Monthly MRR Bridge
+
+`mart.vw\_monthly\_mrr\_bridge`
+
+
+
+Reconciles:
+
+Beginning MRR
+
+
+
+New
+
+
+
+Expansion
+
+
+
+Contraction
+
+
+
+Churn = Ending MRR
+
+
+
+
+
+Includes a reconciliation check (`bridge\_diff`) to ensure financial consistency.
+
+
+
+\#### Monthly Retention Metrics
+
+`mart.vw\_monthly\_retention`
+
+
+
+Metrics:
+
+\- Logo retention rate
+
+\- Gross Revenue Retention (GRR)
+
+\- Net Revenue Retention (NRR)
+
+
+
+Definitions:
+
+\- GRR = (Beginning MRR - Contraction - Churn) / Beginning MRR
+
+\- NRR = (Beginning MRR + Expansion - Contraction - Churn) / Beginning MRR
+
+
+
+
+
+\## 5. Power BI Model
+
+
+
+\- Star schema imported from MART
+
+\- Single-direction relationships
+
+\- Minimal DAX (measures only)
+
+\- SQL handles heavy transformations
+
+\- Executive-level visuals:
+
+&nbsp; - MRR trend
+
+&nbsp; - MRR bridge
+
+&nbsp; - Retention KPIs
+
+&nbsp; - Growth diagnostics
+
+
+
+
+
+\## 6. Reproducibility
+
+
+
+The dataset is fully reproducible.
+
+
+
+To regenerate:
+
+
+
+1\. Run `generate\_saas\_data.py`
+
+2\. Reload CSVs into `raw` schema
+
+3\. Execute staging scripts
+
+4\. Rebuild mart tables and views
+
+5\. Refresh Power BI
+
+
+
+The pipeline is fully rerunnable.
+
+
+
+
+
+\## 7. Key Signals Demonstrated
+
+
+
+This project showcases:
+
+
+
+\- Production-style layered SQL architecture
+
+\- Star schema modeling
+
+\- Window functions (LAG)
+
+\- Revenue movement classification logic
+
+\- KPI definition rigor
+
+\- Financial reconciliation validation
+
+\- Separation of computation vs presentation logic
+
+\- Clean Power BI semantic modeling
+
+
+
+
+
+\## 8. Repository Structure
+
+
+
+1\_data\_generation/
+
+generate\_saas\_data.py
+
+
+
+2\_data/
+
+&nbsp;	raw/ (generated CSV files)
+
+&nbsp;	samples/ (small example data)
+
+
+
+3\_sql/
+
+&nbsp;	raw/
+
+&nbsp;	staging/
+
+&nbsp;	mart/
+
+
+
+4\_powerbi/
+
+&nbsp;	Power BI report file
+
+
+
+0\_project\_admin/
+
+&nbsp;	assumptions.md
+
+&nbsp;	README.md
+
+&nbsp;	LICENSE
+
+
+
+
+
+\## 9. Why This Project Matters
+
+
+
+This is not a dashboard exercise.
+
+
+
+It is a full analytics system designed to reflect how subscription businesses measure:
+
+
+
+\- Growth quality
+
+\- Revenue durability
+
+\- Expansion strength
+
+\- Churn risk
+
+\- Capital efficiency
+
+
+
+The architecture mirrors real-world BI environments and is intentionally built for scalability and clarity.
+
+\*Project by \[EstebanSP23](https://github.com/EstebanSP23) – Production-oriented Data Analytics Portfolio\*
+
