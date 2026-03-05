@@ -215,7 +215,21 @@ LICENSE
 
 ---
 
-## 9. Why This Project Matters  
+## 9. Key Insights
+
+• The company grew from 15 to 7,126 active customers over 36 months.
+
+• Monthly recurring revenue reached ~$719K by the end of the period.
+
+• Average logo retention is ~97%, indicating strong customer stickiness.
+
+• Net revenue retention averages ~99%, meaning expansion nearly offsets churn but does not yet drive net revenue growth.
+
+• Most customers remain in the Basic plan tier, suggesting potential for upsell-driven expansion.
+
+---
+
+## 10. Why This Project Matters  
 
 This is not a dashboard exercise.  
 
