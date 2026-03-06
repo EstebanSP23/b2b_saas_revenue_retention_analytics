@@ -26,8 +26,9 @@ The dataset is synthetic but engineered to simulate realistic B2B SaaS behavior 
 
 ---
 
-## 2. Architecture Overview 
+## 2. Architecture Overview
 
+```text
 Data Generation (Python)
         │
         ▼
@@ -58,6 +59,7 @@ Power BI
   • Star schema model
   • KPI measures
   • Executive dashboards
+```
 
 ---
 
@@ -178,23 +180,7 @@ Definitions:
 
 ---
 
-## 6. Reproducibility  
-
-The dataset is fully reproducible.  
-
-To regenerate:  
-
-1. Run `generate_saas_data.py`  
-2. Reload CSVs into `raw` schema  
-3. Execute staging scripts  
-4. Rebuild mart tables and views  
-5. Refresh Power BI  
-
-The pipeline is fully rerunnable.  
-
----
-
-## 7. Key Signals Demonstrated  
+## 6. Key Signals Demonstrated  
 
 This project showcases:  
 
@@ -209,36 +195,36 @@ This project showcases:
 
 ---
 
-## 8. Repository Structure  
+## 7. Repository Structure  
 
 1_data_generation/  
-    generate_saas_data.py
+    generate_saas_data.py  
 
 2_data/  
     raw/  
-    samples/
+    samples/  
 
-3_sql/
-    raw/
-    staging/
-    mart/
+3_sql/  
+    raw/  
+    staging/  
+    mart/  
 
-4_powerbi/
-    Power BI report file
+4_powerbi/  
+    Power BI report file  
 
-5_outputs/
-    dashboard_overview.png
+5_outputs/  
+    dashboard_overview.png  
 
 
-0_project_admin/
-    assumptions.md
+0_project_admin/  
+    assumptions.md  
 
 README.md  
 LICENSE  
 
 ---
 
-## 9. Key Insights
+## 8. Key Insights
 
 • The company grew from 15 to 7,126 active customers over 36 months.
 
@@ -251,13 +237,13 @@ LICENSE
 • Most customers remain in the Basic plan tier, suggesting potential for upsell-driven expansion.
 
 
-## Dashboard Preview
+## 9. Dashboard Preview
 
 ![Dashboard Overview](5_outputs/dashboard_overview.png)
 
 ---
 
-## 10. Reproducing the Project
+## 10. How to Reproduce the Project
 
 1. Run the Python generator to create synthetic SaaS data
 2. Load CSV files into PostgreSQL RAW schema
