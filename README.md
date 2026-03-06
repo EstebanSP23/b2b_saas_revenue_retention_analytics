@@ -197,31 +197,31 @@ This project showcases:
 
 ## 7. Repository Structure  
 
-1_data_generation/  
-    generate_saas_data.py  
+```text
+1_data_generation/
+    generate_saas_data.py
 
-2_data/  
-    raw/  
-    samples/  
+2_data/
+    raw/
+    samples/
 
-3_sql/  
-    raw/  
-    staging/  
-    mart/  
+3_sql/
+    raw/
+    staging/
+    mart/
 
-4_powerbi/  
-    Power BI report file  
+4_powerbi/
+    Power BI report file
 
-5_outputs/  
-    dashboard_overview.png  
+5_outputs/
+    dashboard_overview.png
 
+0_project_admin/
+    assumptions.md
 
-0_project_admin/  
-    assumptions.md  
-
-README.md  
-LICENSE  
-
+README.md
+LICENSE
+```
 ---
 
 ## 8. Key Insights
