@@ -211,7 +211,7 @@ This project showcases:
     mart/
 
 4_powerbi/
-    Power BI report file
+    saas_revenue_dashboard.pbix
 
 5_outputs/
     dashboard_overview.png
