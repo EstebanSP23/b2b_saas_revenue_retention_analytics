@@ -22,11 +22,46 @@ The system measures:
 - Cohort behavior over time  
 - Growth efficiency (Customer Acquisition Cost vs revenue)  
 
-The dataset is synthetic but engineered to simulate realistic B2B SaaS behavior over 36 months.  
+The dataset is synthetic but engineered to simulate realistic B2B SaaS behavior over 36 months. 
 
 ---
 
-## 2. Business Model Assumptions  
+## 2. Architecture Overview 
+
+Data Generation (Python)
+        │
+        ▼
+CSV Files (Raw Data)
+        │
+        ▼
+PostgreSQL
+───────────────
+RAW Layer
+  • plans
+  • customers
+  • customer_month
+  • acquisition_cost
+───────────────
+STAGING Layer
+  • cleaned & standardized tables
+───────────────
+MART Layer
+  • dim_date
+  • dim_customer
+  • dim_plan
+  • fact_customer_month
+  • vw_monthly_mrr_bridge
+  • vw_monthly_retention
+        │
+        ▼
+Power BI
+  • Star schema model
+  • KPI measures
+  • Executive dashboards
+
+---
+
+## 3. Business Model Assumptions  
 
 - 36 months of data (Jan 2023 – Dec 2025)  
 - 10,000 total customers  
@@ -40,22 +75,6 @@ The dataset is synthetic but engineered to simulate realistic B2B SaaS behavior 
   - 30% downgrades  
 - Linear growth with controlled randomness  
 - Customer acquisition channels with variable CAC (Customer Acquisition Cost)  
-
----
-
-## 3. Architecture Overview  
-
-The system follows a layered architecture inspired by production analytics environments.  
-
-Python Generator  
-↓  
-RAW (PostgreSQL)  
-↓  
-STAGING (cleaned & standardized)  
-↓  
-MART (star schema + KPI views)  
-↓  
-Power BI (semantic model + executive reporting)  
 
 ---
 
@@ -193,22 +212,26 @@ This project showcases:
 ## 8. Repository Structure  
 
 1_data_generation/  
-    generate_saas_data.py  
+    generate_saas_data.py
 
 2_data/  
     raw/  
-    samples/  
+    samples/
 
-3_sql/  
-    raw/  
-    staging/  
-    mart/  
+3_sql/
+    raw/
+    staging/
+    mart/
 
-4_powerbi/  
-    Power BI report file  
+4_powerbi/
+    Power BI report file
 
-0_project_admin/  
-    assumptions.md  
+5_outputs/
+    dashboard_overview.png
+
+
+0_project_admin/
+    assumptions.md
 
 README.md  
 LICENSE  
@@ -227,9 +250,24 @@ LICENSE
 
 • Most customers remain in the Basic plan tier, suggesting potential for upsell-driven expansion.
 
+
+## Dashboard Preview
+
+![Dashboard Overview](5_outputs/dashboard_overview.png)
+
 ---
 
-## 10. Why This Project Matters  
+## 10. Reproducing the Project
+
+1. Run the Python generator to create synthetic SaaS data
+2. Load CSV files into PostgreSQL RAW schema
+3. Execute SQL scripts (raw → staging → mart)
+4. Open Power BI report and refresh the model
+
+---
+
+
+## 11. Why This Project Matters  
 
 This is not a dashboard exercise.  
 
