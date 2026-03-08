@@ -192,8 +192,8 @@ Definitions:
 - CAC = Marketing Spend / New Customers  
 - ARPU = Monthly MRR / Active Customers  
 - Churn Rate = Churned Customers / Beginning Active Customers  
-- LTV ≈ ARPU / Churn Rate  
-- LTV/CAC = LTV / CAC  
+- LTV = ARPU / Churn Rate  
+- LTV_CAC Ratio = LTV / CAC
 
 These metrics help evaluate whether subscription growth is economically efficient, not just fast.
 
@@ -260,12 +260,12 @@ LICENSE
 
 ## 8. Key Insights
 
-• The company grew from 15 to 7,126 active customers over 36 months.
-• Monthly recurring revenue reached ~$719K by the end of the period.
-• Average logo retention is ~97%, indicating strong customer stickiness.
-• Net revenue retention averages ~99%, meaning expansion nearly offsets churn but does not yet drive net revenue growth.
-• Most customers remain in the Basic plan tier, suggesting potential for upsell-driven expansion.
-• LTV/CAC trends indicate whether acquisition spending generates sustainable long-term customer value.
+- The company grew from 15 to 7,126 active customers over 36 months.
+- Monthly recurring revenue reached ~$719K by the end of the period.
+- Average logo retention is ~97%, indicating strong customer stickiness.
+- Net revenue retention averages ~99%, meaning expansion nearly offsets churn but does not yet drive net revenue growth.
+- Most customers remain in the Basic plan tier, suggesting potential for upsell-driven expansion.
+- LTV/CAC trends indicate whether acquisition spending generates sustainable long-term customer value.
 
 ## 9. Dashboard Preview
 
