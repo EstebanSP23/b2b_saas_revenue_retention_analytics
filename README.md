@@ -267,6 +267,8 @@ LICENSE
 - Most customers remain in the Basic plan tier, suggesting potential for upsell-driven expansion.
 - LTV/CAC trends indicate whether acquisition spending generates sustainable long-term customer value.
 
+---
+
 ## 9. Dashboard Preview
 
 ![Dashboard Overview](5_outputs/dashboard_overview.png)
