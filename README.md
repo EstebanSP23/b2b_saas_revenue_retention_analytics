@@ -20,7 +20,14 @@ The system measures:
 - Gross Revenue Retention (GRR)  
 - Net Revenue Retention (NRR)  
 - Cohort behavior over time  
-- Growth efficiency (Customer Acquisition Cost vs revenue)  
+
+Growth efficiency and SaaS unit economics:
+
+- Customer Acquisition Cost (CAC)  
+- Average Revenue Per User (ARPU)  
+- Customer churn rate  
+- Lifetime Value (LTV) approximation  
+- LTV/CAC ratio
 
 The dataset is synthetic but engineered to simulate realistic B2B SaaS behavior over 36 months. 
 
@@ -53,6 +60,7 @@ MART Layer
   • fact_customer_month
   • vw_monthly_mrr_bridge
   • vw_monthly_retention
+  • vw_growth_efficiency
         │
         ▼
 Power BI
@@ -166,6 +174,31 @@ Definitions:
 
 ---
 
+#### Growth Efficiency Metrics  
+`mart.vw_growth_efficiency`
+
+Calculates SaaS unit economics by combining customer lifecycle activity with acquisition cost.
+
+Metrics:
+
+- Customer Acquisition Cost (CAC)  
+- Average Revenue Per User (ARPU)  
+- Customer churn rate  
+- Lifetime Value (LTV) approximation  
+- LTV/CAC ratio  
+
+Definitions:
+
+- CAC = Marketing Spend / New Customers  
+- ARPU = Monthly MRR / Active Customers  
+- Churn Rate = Churned Customers / Beginning Active Customers  
+- LTV ≈ ARPU / Churn Rate  
+- LTV/CAC = LTV / CAC  
+
+These metrics help evaluate whether subscription growth is economically efficient, not just fast.
+
+---
+
 ## 5. Power BI Model  
 
 - Star schema imported from MART  
@@ -176,7 +209,7 @@ Definitions:
   - MRR trend  
   - MRR bridge  
   - Retention KPIs  
-  - Growth diagnostics  
+  - Growth efficiency metrics (CAC, LTV, LTV/CAC)  
 
 ---
 
@@ -188,10 +221,11 @@ This project showcases:
 - Star schema modeling  
 - Window functions (LAG)  
 - Revenue movement classification logic  
-- KPI definition rigor  
+- SaaS retention and revenue metrics (GRR / NRR)  
+- SaaS unit economics (CAC, ARPU, LTV, LTV/CAC)  
 - Financial reconciliation validation  
 - Separation of computation vs presentation logic  
-- Clean Power BI semantic modeling  
+- Clean Power BI semantic modeling
 
 ---
 
@@ -227,15 +261,11 @@ LICENSE
 ## 8. Key Insights
 
 • The company grew from 15 to 7,126 active customers over 36 months.
-
 • Monthly recurring revenue reached ~$719K by the end of the period.
-
 • Average logo retention is ~97%, indicating strong customer stickiness.
-
 • Net revenue retention averages ~99%, meaning expansion nearly offsets churn but does not yet drive net revenue growth.
-
 • Most customers remain in the Basic plan tier, suggesting potential for upsell-driven expansion.
-
+• LTV/CAC trends indicate whether acquisition spending generates sustainable long-term customer value.
 
 ## 9. Dashboard Preview
 
@@ -257,13 +287,13 @@ LICENSE
 
 This is not a dashboard exercise.  
 
-It is a full analytics system designed to reflect how subscription businesses measure:  
+It is a full analytics system designed to reflect how subscription businesses measure:
 
 - Growth quality  
 - Revenue durability  
-- Expansion strength  
-- Churn risk  
-- Capital efficiency  
+- Retention strength  
+- Customer lifecycle dynamics  
+- Capital efficiency through SaaS unit economics (CAC, LTV, LTV/CAC)
 
 The architecture mirrors real-world BI environments and is intentionally built for scalability and clarity.  
 
