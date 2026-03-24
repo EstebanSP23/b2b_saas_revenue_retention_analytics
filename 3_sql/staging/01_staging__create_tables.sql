@@ -1,70 +1,49 @@
 -- ============================================
--- 01_raw__create_tables.sql
--- Layer: RAW
+-- 01_staging_create_tables.sql
+-- Layer: STAGING
 -- Purpose:
---   Create the RAW tables that store CSV data "as loaded".
---   No business logic here — only structure and basic constraints.
---
--- How to run (pgAdmin Query Tool):
---   1) Connect to database: b2b_saas_revenue_retention_analytics
---   2) Execute this script
+--   Create cleaned, standardized tables derived from raw.*
+--   This layer fixes types, ensures joinability, and adds basic validation fields.
 -- ============================================
 
--- Ensure schemas exist (safe to run multiple times)
-CREATE SCHEMA IF NOT EXISTS raw;
 CREATE SCHEMA IF NOT EXISTS staging;
-CREATE SCHEMA IF NOT EXISTS mart;
 
--- ============================================
--- raw.plans
--- 1 row per subscription plan
--- ============================================
-DROP TABLE IF EXISTS raw.plans;
-CREATE TABLE raw.plans (
+-- ---------- staging.plans ----------
+DROP TABLE IF EXISTS staging.plans;
+CREATE TABLE staging.plans (
     plan_id         INT PRIMARY KEY,
     plan_name       TEXT NOT NULL,
     monthly_price   INT NOT NULL
 );
 
--- ============================================
--- raw.customers
--- 1 row per customer (acquisition attributes)
--- ============================================
-DROP TABLE IF EXISTS raw.customers;
-CREATE TABLE raw.customers (
+-- ---------- staging.customers ----------
+DROP TABLE IF EXISTS staging.customers;
+CREATE TABLE staging.customers (
     customer_id          INT PRIMARY KEY,
     signup_month         DATE NOT NULL,
     acquisition_channel  TEXT NOT NULL,
     initial_plan_id      INT NOT NULL
 );
 
--- ============================================
--- raw.customer_month
--- Grain: 1 row per customer per month AFTER signup
--- Notes:
---   - plan_id can be NULL when customer churns (mrr = 0)
--- ============================================
-DROP TABLE IF EXISTS raw.customer_month;
-CREATE TABLE raw.customer_month (
+-- ---------- staging.customer_month ----------
+-- Same grain as raw: one row per customer per month after signup
+DROP TABLE IF EXISTS staging.customer_month;
+CREATE TABLE staging.customer_month (
     customer_id  INT NOT NULL,
     month        DATE NOT NULL,
     plan_id      INT NULL,
-    mrr          INT NOT NULL
+    mrr          INT NOT NULL,
+    -- Basic validation flags (simple and useful)
+    is_churn_month BOOLEAN NOT NULL DEFAULT FALSE
 );
 
--- Prevent duplicates at the customer-month grain
-DROP INDEX IF EXISTS raw.ux_raw_customer_month;
-CREATE UNIQUE INDEX ux_raw_customer_month
-ON raw.customer_month (customer_id, month);
+CREATE UNIQUE INDEX IF NOT EXISTS ux_staging_customer_month
+ON staging.customer_month (customer_id, month);
 
--- ============================================
--- raw.acquisition_cost
--- 1 row per customer with acquisition cost (CAC)
--- CAC = Customer Acquisition Cost
--- ============================================
-DROP TABLE IF EXISTS raw.acquisition_cost;
-CREATE TABLE raw.acquisition_cost (
-    customer_id          INT NOT NULL,
+-- ---------- staging.acquisition_cost ----------
+DROP TABLE IF EXISTS staging.acquisition_cost;
+CREATE TABLE staging.acquisition_cost (
+    customer_id          INT PRIMARY KEY,
     acquisition_channel  TEXT NOT NULL,
     signup_month         DATE NOT NULL,
     cac                  NUMERIC(12,2) NOT NULL
