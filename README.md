@@ -2,6 +2,10 @@
 
 ### Production-Style SQL Pipeline + Power BI Executive Dashboard  
 
+![Executive Dashboard](5_outputs/dashboard_overview.png)
+
+> A layered Python → PostgreSQL → Power BI system that measures whether subscription growth is healthy, retentive, and economically efficient — with a SQL validation suite that makes every dashboard number auditable from the fact table.
+
 ---
 
 ## 1. Executive Summary  
@@ -199,6 +203,23 @@ These metrics help evaluate whether subscription growth is economically efficien
 
 ---
 
+### Validation Layer  
+
+The `3_sql/validation/` folder contains a suite of standalone SQL scripts that verify the pipeline is internally consistent before any dashboard is built on top of it. Each script returns a `check_status` column with a `PASS` / `FAIL` verdict so the suite can be re-run after any change to the data or logic.
+
+| # | Script | What it verifies |
+|---|---|---|
+| 01 | `01_validate_row_counts_raw_vs_staging.sql` | Every staging table has the same row count as its raw source — no silent loss or duplication during the load. |
+| 02 | `02_validate_mrr_bridge_reconciliation.sql` | For every month, `beginning + new + expansion − contraction − churn = ending` (uses the existing `bridge_diff` column). |
+| 03 | `03_validate_fact_referential_integrity.sql` | Every `customer_id`, `plan_id`, and `month_start` in the fact resolves to its dimension — no orphan keys that would break slicers. |
+| 04 | `04_validate_nulls_and_keys.sql` | No NULLs in keys or critical measures, and the composite primary key `(customer_id, month_start)` is unique. |
+| 05 | `05_validate_movement_type_sanity.sql` | `mrr_movement_type` values are valid, the `'Other'` fallback bucket is empty, and `mrr_delta` signs match the business meaning of each movement. |
+| 06 | `06_validate_growth_efficiency_sanity.sql` | KPIs in `vw_growth_efficiency` satisfy business invariants: no negative counts/spend, `churn_rate ∈ [0, 1]`, ARPU positive when revenue exists, etc. |
+
+The intent is to make the dataset auditable: a stakeholder can rerun these checks at any time and confirm the numbers in the dashboard reconcile from the underlying fact table.
+
+---
+
 ## 5. Power BI Model  
 
 - Star schema imported from MART  
@@ -224,6 +245,7 @@ This project showcases:
 - SaaS retention and revenue metrics (GRR / NRR)  
 - SaaS unit economics (CAC, ARPU, LTV, LTV/CAC)  
 - Financial reconciliation validation  
+- Data validation suite (row-count parity, MRR bridge reconciliation, referential integrity, key uniqueness, business-rule and KPI sanity checks)  
 - Separation of computation vs presentation logic  
 - Clean Power BI semantic modeling
 
@@ -243,6 +265,7 @@ This project showcases:
     raw/
     staging/
     mart/
+    validation/
 
 4_powerbi/
     saas_revenue_dashboard.pbix
@@ -253,6 +276,7 @@ This project showcases:
 0_project_admin/
     assumptions.md
 
+requirements.txt
 README.md
 LICENSE
 ```
@@ -277,10 +301,15 @@ LICENSE
 
 ## 10. How to Reproduce the Project
 
-1. Run the Python generator to create synthetic SaaS data
-2. Load CSV files into PostgreSQL RAW schema
-3. Execute SQL scripts (raw → staging → mart)
-4. Open Power BI report and refresh the model
+1. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Run the Python generator to create synthetic SaaS data (`1_data_generation/generate_saas_data.py`)
+3. Load the resulting CSV files into the PostgreSQL `raw` schema
+4. Execute the SQL pipeline in order: `3_sql/raw/` → `3_sql/staging/` → `3_sql/mart/`
+5. Run the validation suite (`3_sql/validation/`) and confirm every check returns `PASS`
+6. Open the Power BI report (`4_powerbi/`) and refresh the model
 
 ---
 
